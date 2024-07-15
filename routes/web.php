@@ -20,6 +20,7 @@ Route::get('/', function () {
 });
 Route::get('/index', [MovieController::class, 'index'])->name('index');
 Route::get('/index/search', [MovieController::class, 'search'])->name('search');
+Route::get('/movie/{id}', [MovieController::class, 'show'])->name('movies.show');
 
 Route::get('/dashboard', [MovieController::class, 'index'])
 ->middleware(['auth', 'verified'])->name('dashboard');

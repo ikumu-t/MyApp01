@@ -5,10 +5,7 @@
         </h2>
     </x-slot>
     <div>
-        <form action="{{ route('search') }}" method="GET">
-            <input type="text" name="query" placeholder="Search movies...">
-            <button type="submit">Search</button>
-        </form>
+    @include('components.search')
     </div>
     <div>
         <h2>Popular</h2>
