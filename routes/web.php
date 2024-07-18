@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/index', [MovieController::class, 'index'])->name('index');
-Route::get('/index/search', [MovieController::class, 'search'])->name('search');
+
+Route::get('/search', [MovieController::class, 'search'])->name('search');
 Route::get('/movie/{id}', [MovieController::class, 'show'])->name('movies.show');
 
-Route::get('/dashboard', [MovieController::class, 'index'])
+Route::get('/dashboard', [MovieController::class, 'dashboard'])
 ->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

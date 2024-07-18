@@ -17,4 +17,10 @@ class Movie extends Model
     {
         return Movie::where('title', 'LIKE', '%'.$query.'%')->get();
     }
+    
+    public static function getMoviesByTmdbIds($tmdb_ids) {
+        return Movie::whereIn('tmdb_id', $tmdb_ids)
+                    ->orderByRaw("FIELD(tmdb_id, '" . implode("','", $tmdb_ids) . "')")
+                    ->get();
+    }
 }

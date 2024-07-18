@@ -11,14 +11,21 @@ class MovieController extends Controller
 {
     protected $tmdbService;
     
-    public function __construct(TmdbService $tmdbSercice)
+    public function __construct(TmdbService $tmdbService)
     {
-        $this->tmdbService =$tmdbSercice;
+        $this->tmdbService = $tmdbService;
     }
     
-    public function index()
+    public function dashboard()
     {
         $movies = $this->tmdbService->getPopularMovies()->results;
+        $this->saveMoviesData($movies);
+        foreach ($movies as $movie) {
+            $tmdb_ids[] = $movie->id;
+        }
+        //dd($tmdb_ids);
+        $movies = Movie::getMoviesByTmdbIds($tmdb_ids);
+        //dd($movies);
         
         return view('dashboard', compact('movies',));
     }
@@ -34,15 +41,19 @@ class MovieController extends Controller
         }
         $this->saveMoviesData($movies);
         
-        $movies = Movie::getSearchResults($query);
+        if (!empty($query)) {
+            $movies = Movie::getSearchResults($query);
+        } else {
+            $movies = [];
+        }
 
-        return view('movies.index', compact('movies'));
+        return view('movies.search_results', compact('movies'));
     }
     
     public function saveMoviesData($movies)
     {
         foreach ($movies as $movieData) {
-            //dd($movieData -> poster_path);
+            //dd($movieData);
             $movie = Movie::updateOrCreate(
                 ['tmdb_id' => $movieData->id],
                 [
