@@ -9,13 +9,23 @@ class Tag extends Model
 {
     use HasFactory;
     
+    protected $fillable = [
+        'name',
+        'user_id',
+    ];
+    
     public function users()
     {
-        $this->belongTo(User::class);
+        $this->belongsTo(User::class);
     }
     
     public function reviews()
     {
-        $this->blongToMany(Review::class);
+        $this->blongsToMany(Review::class);
+    }
+    
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
     }
 }

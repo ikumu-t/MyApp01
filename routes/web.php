@@ -2,18 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RankingController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +12,8 @@ Route::get('/', function () {
 
 Route::get('/search', [MovieController::class, 'search'])->name('search');
 Route::get('/movie/{id}', [MovieController::class, 'show'])->name('movies.show');
+Route::get('/movies/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
+Route::post('/reviews', [ReviewController::class, 'store'])->name('review.store');
 
 Route::get('/dashboard', [MovieController::class, 'dashboard'])
 ->middleware(['auth', 'verified'])->name('dashboard');

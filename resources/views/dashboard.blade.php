@@ -1,13 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+
     <div>
-    <h2>Popular</h2>
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             @include('components.search')
+            <h2　class="text-2xl font-bold mb-4">Popular</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 @foreach($movies as $movie)
                     <div class="bg-white shadow-md rounded-lg overflow-hidden">
