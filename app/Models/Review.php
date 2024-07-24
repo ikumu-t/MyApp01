@@ -8,16 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
+    
+    protected $fillable = [
+        'user_id',
+        'movie_id',
+        'score',
+        'comment'
+    ];
+    
     /**
      *ユーザーモデルと多対１のリレーション 
      */
     public function users()
     {
-        return $this->belongTo(User::class);
+        return $this->belongsTo(User::class);
     }
     
     public function tags()
     {
-        return $this->belongToMany(Tag::class);
+        return $this->belongsToMany(Tag::class);
     }
+    
+    public function movies()
+    {
+        return $this->belongsTo(Movie::class);
+    }
+    
 }

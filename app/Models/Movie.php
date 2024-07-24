@@ -23,4 +23,9 @@ class Movie extends Model
                     ->orderByRaw("FIELD(tmdb_id, '" . implode("','", $tmdb_ids) . "')")
                     ->get();
     }
+    
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

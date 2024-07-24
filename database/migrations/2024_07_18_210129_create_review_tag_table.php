@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review_tags', function (Blueprint $table) {
+        Schema::create('review_tag', function (Blueprint $table) {
             $table->primary(['review_id','tag_id']);
             $table->foreignId('review_id')->constrained('reviews');
             $table->foreignId('tag_id')->constrained('tags');

@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\TmdbService;
 use App\Models\Movie;
+use App\Models\Review;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 
 class MovieController extends Controller
 {
@@ -71,7 +74,13 @@ class MovieController extends Controller
     public function show($id)
     {
         $movie = Movie::findOrFail($id);
-        //dd($movie);
-        return view('movies.show', compact('movie'));
+        
+        $review = Review::where('movie_id', $id)
+                        ->where('user_id', Auth::id())
+                        ->with('tags')
+                        ->latest()
+                        ->first();
+                        //dd($review);
+        return view('movies.show', compact('movie', 'review'));
     }
-}
+} 
