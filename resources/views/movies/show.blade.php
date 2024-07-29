@@ -1,16 +1,17 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div class="flex items-start">
-            <div class="w-3xl sm:w-3xl mr-4">
-                <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain">
+        <div class="flex items-start bg-blue-900">
+            <div class="w-2xl mr-4">
+                <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-48">
             </div>
             <div class="w-1/2 border border-red-500">
                 <h2 class="text-2xl font-bold">{{ $movie->title }}</h2>
+                <h2>{{ $movie->release_date }}</h2>
                 <p class="text-gray-600">{{ $movie->overview }}</p>
             </div>
         </div>
         <div>
-            <form action="{{ route('review.store') }}" method="POST">
+            <form action="{{ route('reviews.store') }}" method="POST">
                 @csrf
                 <div class="mt-4">
                     <label for="tags">Tags</label>

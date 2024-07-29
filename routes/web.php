@@ -6,22 +6,34 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RankingController;
 use Illuminate\Support\Facades\Route;
 
+//Welcome route
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/search', [MovieController::class, 'search'])->name('search');
-Route::get('/movie/{id}', [MovieController::class, 'show'])->name('movies.show');
-Route::get('/movies/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
-Route::post('/reviews', [ReviewController::class, 'store'])->name('review.store');
+// Public routes
+Route::prefix('movies')->group(function () {
+    Route::get('popular', [MovieController::class, 'popular'])->name('movies.popular');
+    Route::get('/search', [MovieController::class, 'search'])->name('movies.search');
+    Route::get('/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
+    Route::get('/{id}', [MovieController::class, 'show'])->name('movies.show');
+});
 
-Route::get('/dashboard', [MovieController::class, 'dashboard'])
-->middleware(['auth', 'verified'])->name('dashboard');
+// Review routes
+Route::middleware('auth')->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+});
 
+// Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Test route
+Route::get('/test', function() {
+    return view('test');
+})->name('test');
 
 require __DIR__.'/auth.php';

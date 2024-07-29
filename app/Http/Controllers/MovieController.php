@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\TmdbService;
+use App\Services\MovieService;
 use App\Models\Movie;
 use App\Models\Review;
 use Carbon\Carbon;
@@ -13,24 +14,26 @@ use Illuminate\Support\Facades\Auth;
 class MovieController extends Controller
 {
     protected $tmdbService;
+    protected $movieService;
     
-    public function __construct(TmdbService $tmdbService)
+    public function __construct(TmdbService $tmdbService, MovieService $movieService)
     {
         $this->tmdbService = $tmdbService;
+        $this->movieService = $movieService;
     }
     
-    public function dashboard()
+    public function popular()
     {
-        $movies = $this->tmdbService->getPopularMovies()->results;
-        $this->saveMoviesData($movies);
-        foreach ($movies as $movie) {
-            $tmdb_ids[] = $movie->id;
-        }
-        //dd($tmdb_ids);
-        $movies = Movie::getMoviesByTmdbIds($tmdb_ids);
-        //dd($movies);
+        $popularMovies = $this->tmdbService->getPopularMovies()->results;
+        $this->movieService->storeMoviesData($popularMovies);
         
-        return view('dashboard', compact('movies',));
+        $tmdbIds = array_map(function ($movie) {
+            return $movie->id;
+        }, $popularMovies);
+        
+        $popularMovies = Movie::getMoviesByTmdbIds($tmdbIds);
+        
+        return view('movies.popular', compact('popularMovies',));
     }
     
     public function search(Request $request)
@@ -38,37 +41,14 @@ class MovieController extends Controller
         $query = $request->input('query');
         
         if (!empty($query)) {
-            $movies = $this->tmdbService->searchMovies($query)->results;
+            $searchResults = $this->tmdbService->searchMovies($query)->results;
+            $this->movieService->storeMoviesData($searchResults);
+            $searchResults = Movie::getSearchResults($query);
         } else {
-            $movies = [];
-        }
-        $this->saveMoviesData($movies);
-        
-        if (!empty($query)) {
-            $movies = Movie::getSearchResults($query);
-        } else {
-            $movies = [];
+            $searchResults = [];
         }
 
-        return view('movies.search_results', compact('movies'));
-    }
-    
-    public function saveMoviesData($movies)
-    {
-        foreach ($movies as $movieData) {
-            //dd($movieData);
-            $movie = Movie::updateOrCreate(
-                ['tmdb_id' => $movieData->id],
-                [
-                    'tmdbid' => $movieData->id,
-                    'title' => $movieData->title,
-                    'director' => isset($movieData->director) ? $movieData->director : null,
-                    'release_date' =>isset($movieData->release_date) ? Carbon::parse($movieData->release_date) : null,
-                    'overview' => $movieData->overview,
-                    'poster_path' => $movieData->poster_path ?? null,
-                    ]
-                );
-        }
+        return view('movies.search_results', compact('searchResults'));
     }
     
     public function show($id)
@@ -80,7 +60,12 @@ class MovieController extends Controller
                         ->with('tags')
                         ->latest()
                         ->first();
-                        //dd($review);
+        
+        $tmdbId = $movie->tmdb_id;
+        // dd($movie);
+        // dd($tmdbId);
+        $movieDitail = $this->tmdbService->getMovieDetail($tmdbId);
+
         return view('movies.show', compact('movie', 'review'));
     }
 } 
