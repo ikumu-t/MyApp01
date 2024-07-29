@@ -41,5 +41,15 @@ class TmdbService
         return json_decode($response->getBody()->getContents());
     }
     
-
+    // //映画詳細情報の取得
+    public function getMovieDetail($tmdbId)
+    {
+        $response = $this->client->get('movie/' .$tmdbId, [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'ja',
+            ],
+        ]);
+        return json_decode($response->getBody()->getContents());
+    }
 }

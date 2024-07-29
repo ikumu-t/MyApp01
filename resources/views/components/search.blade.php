@@ -1,8 +1,13 @@
-<form action="{{ route('search') }}" method="GET" class="relative flex items-center">
-        <input type="search" name="query" placeholder="Search..." class="w-full py-2 px-4 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-blue-500" />
-        <button type="submit" class="ml-2" >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a8 8 0 111 1l5 5-1 1-5-5a8 8 0 11-1-1m-7-3a6 6 0 11-1 1l-5 5 1 1 5-5a6 6 0 011-1m8.14-4.26a8 8 0 001.41 10.06l4.95 4.95-1.42 1.42-4.95-4.95a8 8 0 10-10.07-1.41l-1.42 1.42-1.41-1.42 1.42-1.42 1.41-1.42 1.42-1.42-1.42-1.41-1.42 1.41-1.42 1.42-1.42 1.42 1.42 1.41 1.42-1.41 1.42-1.42zM11 15a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
-        </button>
+<form action="{{ route('movies.search') }}" method="GET">
+    <div class='flex items-center justify-center'>
+        <div class="flex w-full mx-10 rounded bg-white">
+            <input class=" w-full border-none bg-transparent px-4 py-1 text-gray-400 outline-none focus:outline-none " type="search" name="query" placeholder="Search..." />
+            <button type="submit" class="m-2 rounded bg-blue-600 px-4 py-2 text-white">
+                <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve" width="512px" height="512px">
+                <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+                </svg>
+            </button>
+        </div>
+    </div>
 </form>
+
