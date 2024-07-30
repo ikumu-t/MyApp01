@@ -22,6 +22,7 @@ Route::prefix('movies')->group(function () {
 // Review routes
 Route::middleware('auth')->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/reviews/destroy', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
 // Profile routes

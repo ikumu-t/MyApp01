@@ -32,6 +32,17 @@
                     <button type="submit">Submit</button>
                 </div>
             </form>
+            @if(isset($review))
+                <div>
+                    <form action="{{ route('reviews.destroy', $review->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 hover:text-red-900">
+                            削除
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

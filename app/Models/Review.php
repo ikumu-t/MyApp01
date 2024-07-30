@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Review extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     
     protected $fillable = [
         'user_id',
@@ -17,7 +19,7 @@ class Review extends Model
     ];
     
     /**
-     *ユーザーモデルと多対１のリレーション 
+     * ユーザーモデルと多対１のリレーション 
      */
     public function users()
     {

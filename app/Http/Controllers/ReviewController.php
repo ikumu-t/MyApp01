@@ -41,6 +41,19 @@ class ReviewController extends Controller
 
     }
     
+    public function destroy($id)
+    {
+        // レビューを取得して、ユーザーが所有しているか確認
+        $review = $this->reviewService->findReviewById($id);
+        
+        if ($review && $review->user_id == Auth::id()) {
+            $this->reviewService->deleteReview($review);
+            return redirect()->back()->with('success', 'レビューが正常に削除されました。');
+        }
+        
+        return redirect()->back()->with('error', 'レビューの削除に失敗しました。');
+    }
+    
     // public function getCreatedReview($movieId)
     // {
     //     return Review::where('movie_id', $movieId)
