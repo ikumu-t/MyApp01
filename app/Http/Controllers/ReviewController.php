@@ -23,7 +23,7 @@ class ReviewController extends Controller
         // リクエストデータをバリデーションして変数に代入
         $validated = $request->validate([
             'tags' => 'required|string|max:50',
-            'comment' => 'required|string',
+            'comment' => 'string',
             'score' => 'required|integer|min:0|max:100',
             'movie_id' => 'required|exists:movies,id'
         ]);

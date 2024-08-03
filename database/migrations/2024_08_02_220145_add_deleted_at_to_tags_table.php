@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
+        Schema::table('tags', function (Blueprint $table) {
             $table->softDeletes(); // deleted_at カラムを追加
-            
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
+        Schema::table('tags', function (Blueprint $table) {
             $table->softDeletes(); // deleted_at カラムを削除
         });
     }
