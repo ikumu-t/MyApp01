@@ -17,4 +17,16 @@ class TagService
         }
         return $tags;
     }
+    
+    // タグをidで取得
+    public function findTagById($id)
+    {
+        return Tag::find($id);
+    }
+    
+    // 論理削除を実行
+    public function deleteTag($tag)
+    {
+        $tag->delete();
+    }
 }

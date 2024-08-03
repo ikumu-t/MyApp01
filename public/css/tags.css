@@ -1,0 +1,19 @@
+.tag-suggestions {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 100%;
+}
+
+.tag-suggestions div {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.tag-suggestions div:hover {
+    background: #f0f0f0;
+}

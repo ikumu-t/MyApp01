@@ -6,41 +6,46 @@ use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Movie;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
     public function rankedMoviesIndex(Request $request)
     {
-        $tag = $request->input('tag');
+        $tags = explode(',', $request->input('tags'));
         $myScore = $request->input('my_score');
         $userId = Auth::id();
-        
-        $tags = Tag::forUser($userId)->get();
-        
-        $query = Movie::query();
-        
-        //タグでフィルタリング
-        if ($tag) {
-            $query->whereHas('reviews.tags', function($q) use ($tag) {
-                $q->where('name', $tag);
-            });
+    
+        $query = Movie::query()->whereHas('reviews'); 
+    
+        // タグによるフィルタリング
+        foreach ($tags as $tag) {
+            $tag = trim($tag);
+            if (!empty($tag)) {
+                $query->whereHas('reviews.tags', function ($q) use ($tag) {
+                    $q->where('name', $tag);
+                });
+            }
         }
+    
+        // ユーザースコアによるフィルタリング
         if ($myScore === 'yes') {
-            $query->whereHas('reviews', function($q) use ($userId) {
+            $query->whereHas('reviews', function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             });
         }
-        
-        $query->whereHas('reviews');
-        
-        $movies = $query->with('reviews')
-            ->get()
-            ->sortByDesc(function($movie) {
-                return $movie->reviews->avg('score') ;
-            });
-        
-        return view('movies.ranked', compact('movies', 'tags'));
+    
+        // スコアに基づいて映画をランク付け
+        $movies = $query->with(['reviews.tags'])
+                        ->withCount(['reviews as average_score' => function ($query) {
+                            $query->select(DB::raw('avg(score)'));
+                        }])
+                        ->orderByDesc('average_score')
+                        ->get();
+    
+        $userTags = Tag::forUser($userId)->get();
+    
+        return view('movies.ranked', compact('movies', 'userTags'));
     }
+
 }
-
-

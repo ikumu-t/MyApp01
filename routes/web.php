@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\TagController;
+
 use Illuminate\Support\Facades\Route;
 
 //Welcome route
@@ -20,10 +22,14 @@ Route::prefix('movies')->group(function () {
 });
 
 // Review routes
-Route::middleware('auth')->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::post('/reviews/destroy', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+Route::middleware('auth')->prefix('reviews')->group(function () {
+    Route::post('/store', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
+
+// Tag routes
+Route::get('tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
+
 
 // Profile routes
 Route::middleware('auth')->group(function () {
@@ -36,5 +42,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/test', function() {
     return view('test');
 })->name('test');
+
+
 
 require __DIR__.'/auth.php';
