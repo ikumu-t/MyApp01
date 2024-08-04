@@ -62,6 +62,8 @@ class MovieController extends Controller
                         ->first();
         
         $tmdbId = $movie->tmdb_id;
+        // dd($movie);
+        // dd($tmdbId);
         $movieDitail = $this->tmdbService->getMovieDetail($tmdbId);
 
         return view('movies.show', compact('movie', 'review'));

@@ -5,7 +5,6 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\StatsController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -28,18 +27,15 @@ Route::middleware('auth')->prefix('reviews')->group(function () {
     Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
 
+// Tag routes
+Route::get('tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
+
 
 // Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
-// Stats route
-Route::middleware('auth')->prefix('stats')->group(function () {
-    Route::get('/index', [StatsController::class, 'index'])->name('stats.index');
 });
 
 // Test route
