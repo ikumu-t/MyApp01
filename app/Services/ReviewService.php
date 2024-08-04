@@ -33,4 +33,17 @@ class ReviewService
     {
         $review->delete();
     }
+    
+    // レビュー件数を取得
+    public function getReviewCount($userId)
+    {
+        return Review::where('user_id', $userId)->count();
+    }
+    
+    // ユーザーの平均スコア
+    public function getAvgScore($userId)
+    {
+        return Review::where('user_id', $userId)->avg('score');
+    }
+    
 }
