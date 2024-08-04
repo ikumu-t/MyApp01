@@ -18,7 +18,7 @@ class Tag extends Model
     
     public function users()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
     
     public function reviews()

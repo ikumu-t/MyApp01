@@ -28,11 +28,12 @@ class ReviewController extends Controller
             'movie_id' => 'required|exists:movies,id'
         ]);
         
+        // レビューを作成または更新
         $review = $this->reviewService->createOrUpdateReview($validated);
         
         // タグの処理
         $tagNames = explode(',', $validated['tags']);
-        $tags = $this->tagService->proccessTags($tagNames);
+        $tags = $this->tagService->processTags($tagNames);
 
         // 中間テーブルへの保存
         $review->tags()->sync($tags);
