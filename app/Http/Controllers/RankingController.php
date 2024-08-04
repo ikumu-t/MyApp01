@@ -13,10 +13,10 @@ class RankingController extends Controller
     public function rankedMoviesIndex(Request $request)
     {
         $tags = explode(',', $request->input('tags'));
-        $myScore = $request->input('my_score') === 'yes';
+        $myScore = $request->input('my_score');
         $userId = Auth::id();
     
-        $query = Movie::query()->whereHas('reviews');
+        $query = Movie::query()->whereHas('reviews'); 
     
         // タグによるフィルタリング
         foreach ($tags as $tag) {
@@ -28,44 +28,24 @@ class RankingController extends Controller
             }
         }
     
-        if ($myScore) {
-            // ユーザーのスコアに基づいたフィルタリング
+        // ユーザースコアによるフィルタリング
+        if ($myScore === 'yes') {
             $query->whereHas('reviews', function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             });
         }
     
-        // 映画と関連レビューの読み込み
-        $movies = $query->with(['reviews' => function ($q) use ($userId, $myScore) {
-            if ($myScore) {
-                $q->where('user_id', $userId);
-            }
-            $q->with('tags');
-        }])->get();
-    
-        $movies = $query->get()->map(function ($movie) use ($userId, $myScore) {
-            $movie->custom_score = $myScore ? $movie->reviews->where('user_id', $userId)->first()->score ?? null : $movie->reviews->avg('score');
-            return $movie;
-        })->sortByDesc('custom_score')->values();  // ここで再インデックス
-    
-        // 順位を割り当て
-        $rank = 1;
-        $lastScore = null;
-        $movies->transform(function ($movie, $index) use (&$rank, &$lastScore) {
-            if ($lastScore !== $movie->custom_score) {
-                $lastScore = $movie->custom_score;
-                $movie->rank = $rank;
-            } else {
-                $movie->rank = $rank; // スコアが同じ場合は同じ順位
-            }
-            $rank++;
-            return $movie;
-        });
+        // スコアに基づいて映画をランク付け
+        $movies = $query->with(['reviews.tags'])
+                        ->withCount(['reviews as average_score' => function ($query) {
+                            $query->select(DB::raw('avg(score)'));
+                        }])
+                        ->orderByDesc('average_score')
+                        ->get();
     
         $userTags = Tag::forUser($userId)->get();
     
-        return view('movies.ranked', compact('movies', 'userTags', 'myScore'));
+        return view('movies.ranked', compact('movies', 'userTags'));
     }
-
 
 }
