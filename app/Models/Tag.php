@@ -23,7 +23,7 @@ class Tag extends Model
     
     public function reviews()
     {
-        $this->blongsToMany(Review::class);
+        return $this->belongsToMany(Review::class);
     }
     
     public function scopeForUser($query, $userId)
