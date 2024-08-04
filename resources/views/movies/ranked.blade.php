@@ -20,7 +20,8 @@
                     class="tag cursor-pointer bg-gray-200 rounded-full px-4 py-2 mb-2"
                     data-tag="{{ $tag->name }}"
                 >
-                    {{ $tag->name }}
+                    {{ $tag->name }} : 
+                    {{ $tag->review_count }}
                 </div>
             @endforeach
         </div>

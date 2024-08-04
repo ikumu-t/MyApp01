@@ -22,11 +22,6 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('test')" :active="request()->routeIs('test')">
-                        {{ __('テストページ') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('stats.index')" :active="request()->routeIs('stats.index')">
                         {{ __('統計') }}
                     </x-nav-link>

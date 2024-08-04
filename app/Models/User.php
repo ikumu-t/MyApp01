@@ -50,6 +50,6 @@ class User extends Authenticatable
     
     public function Tags()
     {
-        return $this->hasMany(Tag::class);
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 }

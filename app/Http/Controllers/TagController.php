@@ -17,25 +17,25 @@ class TagController extends Controller
         $this->tagService = $tagService;
     }
     
-    public function destroy($id)
+    public function removeTag($id)
     {
-        // レビューを取得して、ユーザーが所有しているか確認
-        $review = $this->tagService->findTagById($id);
+        $user = Auth::user();
         
-        if ($tag && $tag->user_id == Auth::id()) {
-            $this->tagService->deleteTag($tag);
+        // レビューを取得して、ユーザーが所有しているか確認
+        $tag = $this->tagService->findTagById($id);
+        
+        if ($tag) {
+            // ユーザーとタグの関連付けを解除
+            $user->tags()->detach($tag->id);
+            
+            // タグが他のユーザーに関連付けられていない場合のみ論理削除を行う
+            if ($tag->users()->count() === 0) {
+                $this->tagService->deleteTag($tag);
+            }
+            
             return redirect()->back()->with('success', 'タグが正常に削除されました。');
         }
         
         return redirect()->back()->with('error', 'タグの削除に失敗しました。');
     }
-    
-    // タグサジェスト
-    public function suggest(Request $request)
-    {
-        $query = $request->input('query');
-        $tags = Tag::where('name', 'LIKE', "%{query}%")->pluck(['id','name']);
-        return response()->json(['suggestions' => $tags]);
-    }
-    
 }

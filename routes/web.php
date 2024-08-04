@@ -36,16 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Tag route
+Route::delete('/tags/{id}', [TagController::class, 'removeTag'])->name('tags.destroy');
 
 // Stats route
 Route::middleware('auth')->prefix('stats')->group(function () {
     Route::get('/index', [StatsController::class, 'index'])->name('stats.index');
 });
 
-// Test route
-Route::get('/test', function() {
-    return view('test');
-})->name('test');
 
 
 
