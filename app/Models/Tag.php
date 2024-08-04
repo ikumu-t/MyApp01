@@ -11,8 +11,6 @@ class Tag extends Model
     use HasFactory;
     use SoftDeletes;
     
-    protected $appends = ['review_count'];
-    
     protected $fillable = [
         'name',
         'user_id',
@@ -25,7 +23,7 @@ class Tag extends Model
     
     public function reviews()
     {
-        return $this->belongsToMany(Review::class);
+        $this->blongsToMany(Review::class);
     }
     
     public function scopeForUser($query, $userId)

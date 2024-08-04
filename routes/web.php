@@ -5,7 +5,6 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\StatsController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +26,9 @@ Route::middleware('auth')->prefix('reviews')->group(function () {
     Route::post('/store', [ReviewController::class, 'store'])->name('reviews.store');
     Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });
+
+// Tag routes
+Route::get('tags/suggest', [TagController::class, 'suggest'])->name('tags.suggest');
 
 
 // Profile routes
