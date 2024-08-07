@@ -25,22 +25,7 @@ class MovieController extends Controller
     public function popular()
     {
         $popularMovies = $this->tmdbService->getPopularMovies()->results;
-        // $this->movieService->storeMoviesData($popularMovies);
-        
-        // APIから取得した映画情報からtmdbIdを配列で抽出
-        $tmdbIds = array_map(function ($movie) {
-            return $movie->id;
-        }, $popularMovies);
-        
-        $scores = Movie::whereIn('tmdb_id', $tmdbIds)
-                                ->withAvg('reviews', 'score')
-                                ->pluck('reviews_avg_score', 'tmdb_id');
-        //dd($scores);
-        foreach ($popularMovies as $movie) {
-            $movie->avg_score = $scores->get($movie->id) ?? 'N/A';
-        }
-        
-        //$popularMovies = Movie::getMoviesByTmdbIds($tmdbIds);
+        $popularMovies = $this->movieService->mergeAverageScores($popularMovies);
         
         return view('movies.popular', compact('popularMovies',));
     }
@@ -51,8 +36,7 @@ class MovieController extends Controller
         
         if (!empty($query)) {
             $searchResults = $this->tmdbService->searchMovies($query)->results;
-            $this->movieService->storeMoviesData($searchResults);
-            $searchResults = Movie::getSearchResults($query);
+            $searchResults = $this->movieService->mergeAverageScores($searchResults);
         } else {
             $searchResults = [];
         }
@@ -60,26 +44,28 @@ class MovieController extends Controller
         return view('movies.search_results', compact('searchResults'));
     }
     
-    public function show($id)
+    public function show($tmdbId)
     {
         // データベースから映画を取得
-        $movie = Movie::findOrFail($id);
+        $movie = Movie::where('tmdb_id', $tmdbId)->first();
+        
+        if (!$movie) {
+            $movieDetailWithCredits = $this->tmdbService->getMovieDetailWithCredits($tmdbId);
+            $movieDetail = $movieDetailWithCredits['movieDetail'];
+            $credits = $movieDetailWithCredits['credits'];
+            $movie = $this->movieService->storeMovieDetailWithCredits($movieDetail, $credits);
+        }
+        dd($movie);
         
         // ユーザーの最新のレビューを取得
-        $review = Review::where('movie_id', $id)
+        $review = Review::where('movie_id', $movie->id)
                         ->where('user_id', Auth::id())
                         ->with('tags')
                         ->latest()
                         ->first();
         
-        // 映画の詳細とクレジットをデータベースに保存
-        $tmdbId = $movie->tmdb_id;
         
-        if (!$movie->credits()->exists()) {
-            $movieDitailWithCredits = $this->tmdbService->getMovieDitailWithCredits($tmdbId);
-            $this->movieService->storeMovieDetailWithCredits($movieDetailWithCredits);
-            $movie = Movie::with(['genles', 'credits'])->findOrFail($id);
-        }
+        
     
         return view('movies.show', compact('movie', 'review'));
     }
