@@ -18,7 +18,7 @@ Route::prefix('movies')->group(function () {
     Route::get('popular', [MovieController::class, 'popular'])->name('movies.popular');
     Route::get('/search', [MovieController::class, 'search'])->name('movies.search');
     Route::get('/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
-    Route::get('/{id}', [MovieController::class, 'show'])->name('movies.show');
+    Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');
 });
 
 // Review routes
