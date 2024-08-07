@@ -23,4 +23,15 @@ class MovieService
             );
         }
     }
+    
+    public function storeGenres($movieDitail)
+    {
+        $genres = $movieDetail->genres;
+        foreach ($genres as $genreData) {
+            $genre = Genre::firstOrCreate(['id' => $genreData->id], ['name' => $genreData->name]);
+            dd($genre);
+            $movie->genres()->attach($genre->id);
+        }
+    }
+    
 }

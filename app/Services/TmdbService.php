@@ -42,14 +42,30 @@ class TmdbService
     }
     
     // //映画詳細情報の取得
-    public function getMovieDetail($tmdbId)
+    public function getMovieDetailWithCredits($tmdbId)
     {
-        $response = $this->client->get('movie/' .$tmdbId, [
+        // 映画の詳細情報を取得
+        $movieDitailResponse = $this->client->get('movie/' .$tmdbId, [
             'query' => [
                 'api_key' => $this->apiKey,
                 'language' => 'ja',
             ],
         ]);
-        return json_decode($response->getBody()->getContents());
+        
+        $movieDitail = json_decode($movieDitailResponse->getBody()->getContents());
+        
+        // 監督や出演者の情報を取得
+        $creditsResponse = $this->client->get('movie/'. $tmdbId. '/credits', [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'ja',
+            ],
+        ]);
+        $credits = json_decode($creditsResponse->getBody()->getContents());
+        
+        return [
+            'movieDetail' => $movieDitail,
+            'credits' => $credits,
+        ];
     }
 }
