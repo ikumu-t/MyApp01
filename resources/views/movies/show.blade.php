@@ -10,10 +10,16 @@
                 <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-full rounded-lg">
             </div>
             <div class="w-2/3 p-4 rounded-lg bg-white h-48 overflow-y-auto">
+                <div class="flex">
                 <h2 class="text-2xl font-bold mb-2">{{ $movie->title }}</h2>
-                <h2 class="text-gray-700 mb-4">{{ $movie->release_date }}</h2>
+                <h2 class="text-gray-700 mb-4">({{ \Carbon\Carbon::parse($movie->release_date)->format('Y') }})</h2>
+                @foreach($movie->genres as $genre)
+                    <h2 class="bg-gray-300 rounded-lg p-1 m-1 y-6 items-center ">{{ $genre->name }}</h2>
+                @endforeach
+                </div>
                 <p class="text-gray-600">{{ $movie->overview }}</p>
             </div>
+
         </div>
         <!--レビューフォームセクション-->
         <div class="mt-6">
