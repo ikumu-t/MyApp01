@@ -47,7 +47,9 @@ class MovieController extends Controller
     public function show($tmdbId)
     {
         // データベースから映画を取得
-        $movie = Movie::where('tmdb_id', $tmdbId)->first();
+        $movie = Movie::where('tmdb_id', $tmdbId)
+            ->with('casts', 'genres', 'reviews')
+            ->firstOrFail();
         
         if (!$movie) {
             $movieDetailWithCredits = $this->tmdbService->getMovieDetailWithCredits($tmdbId);
@@ -55,7 +57,6 @@ class MovieController extends Controller
             $credits = $movieDetailWithCredits['credits'];
             $movie = $this->movieService->storeMovieDetailWithCredits($movieDetail, $credits);
         }
-        dd($movie);
         
         // ユーザーの最新のレビューを取得
         $review = Review::where('movie_id', $movie->id)
@@ -64,8 +65,7 @@ class MovieController extends Controller
                         ->latest()
                         ->first();
         
-        
-        
+        //dd($movie->casts);
     
         return view('movies.show', compact('movie', 'review'));
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Cast;
 use Carbon\Carbon;
 
 class MovieService
@@ -25,7 +26,7 @@ class MovieService
         }
     }
     
-    public function storeGenres($movieDitail)
+    public function storeGenres($movieDetail)
     {
         $genres = $movieDetail->genres;
         foreach ($genres as $genreData) {
@@ -67,17 +68,37 @@ class MovieService
             ]
         );
         
+        // ジャンルデータの保存
         $genres = $movieDetail->genres;
         $genreIds = [];
         foreach ($genres as $genreData) {
             $genre = Genre::firstOrCreate(['id' => $genreData->id], ['name' => $genreData->name]);
             $genreIds[] = $genre->id;
-            
+        }
+        $movie->genres()->syncWithoutDetaching($genreIds);
+        
+        // キャストの処理
+        $castData = [];
+        foreach ($credits->cast as $castMember) {
+            $cast = Cast::firstOrCreate(
+                ['name' => $castMember->name],
+                ['profile_path' => $castMember->profile_path ?? '']
+            );
+            $castData[$cast->id] = ['role' => 'cast', 'character' => $castMember->character];
         }
         
-        $movie->genres()->syncWithoutDetaching($genreIds);
+        foreach ($credits->crew as $crewMember) {
+            if ($crewMember->job === 'Director') {
+                $cast = Cast::firstOrCreate(
+                    ['name' => $crewMember->name],
+                    ['profile_path' => $crewMember->profile_path ?? '']
+                );
+                $castData[$cast->id] = ['role' => 'director'];
+            }
+        }
+        $movie->casts()->syncWithoutDetaching($castData);
         
         return $movie;
     }
+}  
     
-}
