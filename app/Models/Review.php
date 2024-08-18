@@ -23,7 +23,7 @@ class Review extends Model
      */
     public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     
     public function tags()
@@ -33,7 +33,7 @@ class Review extends Model
     
     public function movies()
     {
-        return $this->belongsTo(Movie::class);
+        return $this->belongsTo(Movie::class, 'movie_id');
     }
     
 }

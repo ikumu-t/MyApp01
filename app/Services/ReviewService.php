@@ -46,4 +46,13 @@ class ReviewService
         return Review::where('user_id', $userId)->avg('score');
     }
     
+    // 最新のレビューを取得
+    public function getlatestReviews($count)
+    {
+        return Review::with('movies', 'users')
+                        ->latest()
+                        ->take($count)
+                        ->get();
+    }
+    
 }

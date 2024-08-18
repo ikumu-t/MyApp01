@@ -44,9 +44,9 @@
                             <div class="mb-6 p-4 bg-white rounded shadow-md flex items-center">
                                 <div class="mr-4 text-lg font-bold">{{ $index + 1 }}</div>
                                 <div class="w-12 mr-4 flex items-center justify-center h-20">
-                <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-full rounded-lg">
-            </div>
-                                <a href="{{ route('movies.show', $movie->id) }}" class="text-xl flex items-center font-semibold mb-2" style="min-height: 4rem;">
+                                    <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-full rounded-lg">
+                                </div>
+                                <a href="{{ route('movies.show', $movie->tmdb_id) }}" class="text-xl flex items-center font-semibold mb-2" style="min-height: 4rem;">
                                     {{ $movie->title }}
                                 </a>
                                 <div class="ml-auto text-gray-700">

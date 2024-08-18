@@ -54,13 +54,4 @@ class ReviewController extends Controller
         
         return redirect()->back()->with('error', 'レビューの削除に失敗しました。');
     }
-    
-    // public function getCreatedReview($movieId)
-    // {
-    //     return Review::where('movie_id', $movieId)
-    //                     ->where('user_id', Auth::id())
-    //                     ->with('tags')
-    //                     ->first();
-        
-    // }
 }
