@@ -5,17 +5,17 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\StatsController;
+use App\Http\Controllers\HomeController;
 
 use Illuminate\Support\Facades\Route;
 
 //Welcome route
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'home'])->name('home');
 
 // Public routes
 Route::prefix('movies')->group(function () {
-    Route::get('popular', [MovieController::class, 'popular'])->name('movies.popular');
+    Route::get('/popular', [MovieController::class, 'popular'])->name('movies.popular');
     Route::get('/search', [MovieController::class, 'search'])->name('movies.search');
     Route::get('/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
     Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');

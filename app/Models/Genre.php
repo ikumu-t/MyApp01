@@ -9,7 +9,7 @@ class Genre extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'tmdb_id'];
     
     public function movies()
     {

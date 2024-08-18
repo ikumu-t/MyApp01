@@ -9,34 +9,7 @@ use Carbon\Carbon;
 
 class MovieService
 {
-    public function storeMoviesData($movies)
-    {
-        foreach ($movies as $movieData) {
-            $movie = Movie::updateOrCreate(
-                ['tmdb_id' => $movieData->id],
-                [
-                    'tmdbid' => $movieData->id,
-                    'title' => $movieData->title,
-                    'director' => isset($movieData->director) ? $movieData->director : null,
-                    'release_date' =>isset($movieData->release_date) ? Carbon::parse($movieData->release_date) : null,
-                    'overview' => $movieData->overview,
-                    'poster_path' => $movieData->poster_path ?? null,
-                ]
-            );
-        }
-    }
-    
-    public function storeGenres($movieDetail)
-    {
-        $genres = $movieDetail->genres;
-        foreach ($genres as $genreData) {
-            $genre = Genre::firstOrCreate(['id' => $genreData->id], ['name' => $genreData->name]);
-            dd($genre);
-            $movie->genres()->attach($genre->id);
-        }
-    }
-    
-    public function mergeAverageScores($movies)
+    public function mergeAverageScoresForIndex($movies)
     {
         // APIから取得した映画情報からtmdbIdを配列で抽出
         $tmdbIds = array_map(function ($movie) {
@@ -72,7 +45,9 @@ class MovieService
         $genres = $movieDetail->genres;
         $genreIds = [];
         foreach ($genres as $genreData) {
-            $genre = Genre::firstOrCreate(['id' => $genreData->id], ['name' => $genreData->name]);
+            $genre = Genre::firstOrCreate(
+                ['tmdb_id' => $genreData->id], 
+                ['name' => $genreData->name]);
             $genreIds[] = $genre->id;
         }
         $movie->genres()->syncWithoutDetaching($genreIds);

@@ -25,7 +25,7 @@ class MovieController extends Controller
     public function popular()
     {
         $popularMovies = $this->tmdbService->getPopularMovies()->results;
-        $popularMovies = $this->movieService->mergeAverageScores($popularMovies);
+        $popularMovies = $this->movieService->mergeAverageScoresForIndex($popularMovies);
         
         return view('movies.popular', compact('popularMovies',));
     }
@@ -36,7 +36,7 @@ class MovieController extends Controller
         
         if (!empty($query)) {
             $searchResults = $this->tmdbService->searchMovies($query)->results;
-            $searchResults = $this->movieService->mergeAverageScores($searchResults);
+            $searchResults = $this->movieService->mergeAverageScoresForIndex($searchResults);
         } else {
             $searchResults = [];
         }
@@ -49,7 +49,7 @@ class MovieController extends Controller
         // データベースから映画を取得
         $movie = Movie::where('tmdb_id', $tmdbId)
             ->with('casts', 'genres', 'reviews')
-            ->firstOrFail();
+            ->first();
         
         if (!$movie) {
             $movieDetailWithCredits = $this->tmdbService->getMovieDetailWithCredits($tmdbId);
@@ -57,15 +57,13 @@ class MovieController extends Controller
             $credits = $movieDetailWithCredits['credits'];
             $movie = $this->movieService->storeMovieDetailWithCredits($movieDetail, $credits);
         }
-        
         // ユーザーの最新のレビューを取得
         $review = Review::where('movie_id', $movie->id)
                         ->where('user_id', Auth::id())
                         ->with('tags')
                         ->latest()
                         ->first();
-        
-        //dd($movie->casts);
+        dd($movie->casts);
     
         return view('movies.show', compact('movie', 'review'));
     }
