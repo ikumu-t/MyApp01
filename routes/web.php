@@ -19,10 +19,12 @@ Route::prefix('movies')->group(function () {
     Route::get('/search', [MovieController::class, 'search'])->name('movies.search');
     Route::get('/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
     Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');
+    Route::get('/{tmdbId}/cast', [MovieController::class, 'cast'])->name('movies.cast');
 });
 
 // Review routes
 Route::middleware('auth')->prefix('reviews')->group(function () {
+    Route::get('/create/{movie}', [ReviewController::class, 'create'])->name('reviews.create');
     Route::post('/store', [ReviewController::class, 'store'])->name('reviews.store');
     Route::delete('/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });

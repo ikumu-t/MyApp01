@@ -28,7 +28,7 @@ class StatsController extends Controller
         $avgScore = round($this->reviewService->getAvgScore($user->id));
         
         $userTags = $this->tagService->findTagsByUserId($user->id);
-        $userTags = $this->tagService->getReviewCountByTag($userTags)->sortByDesc('review_count');
+        $userTags = $this->tagService->getUserReviewCountByTag($userTags)->sortByDesc('review_count');
         
         return view('stats.index', 
         compact(

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ReviewService;
 use App\Services\TagService;
+use App\Models\Review;
+use App\Models\Movie;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
@@ -18,8 +20,19 @@ class ReviewController extends Controller
         $this->tagService = $tagService;
     }
     
+    public function create(Movie $movie)
+    {
+        $review = Review::where('movie_id', $movie->id)
+                        ->where('user_id', Auth::id())
+                        ->with('tags')
+                        ->latest()
+                        ->first();
+                        
+        return view('review-form', compact('movie', 'review'));
+    }
+    
     public function store(Request $request)
-{
+    {
         // リクエストデータをバリデーションして変数に代入
         $validated = $request->validate([
             'tags' => 'required|string|max:100',

@@ -1,60 +1,80 @@
 <x-app-layout>
-    @if(session('success'))
-    <div class="bg-green-500 text-white p-4 rounded-lg mb-6">
-        {{ session('success') }}
-    </div>
-    @endif 
-    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div class="flex items-start p-4 rounded-lg bg-white shadow-md">
-            <div class="w-1/3 flex items-center justify-center h-48">
-                <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-full rounded-lg">
+    <div class="container mx-auto px-4 py-8">
+        <!-- 戻るボタン -->
+        <a href="{{ url()->previous() }}" class="absolute top-4 left-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+            ← Back
+        </a>
+        
+        <!-- 映画情報ブロック -->
+        <div class="flex flex-col md:flex-row md:space-x-8 bg-white p-6 rounded-lg shadow-md">
+            <!-- ポスター -->
+            <div class="flex-shrink-0">
+                <img src="https://image.tmdb.org/t/p/w500{{ $movie->poster_path }}" alt="{{ $movie->title }} Poster" class="object-contain h-72 rounded-lg shadow-md"> <!-- サイズを小さく調整 -->
             </div>
-            <div class="w-2/3 p-4 rounded-lg bg-white h-48 overflow-y-auto">
-                <div class="flex">
-                <h2 class="text-2xl font-bold mb-2">{{ $movie->title }}</h2>
-                <h2 class="text-gray-700 mb-4">({{ \Carbon\Carbon::parse($movie->release_date)->format('Y') }})</h2>
-                @foreach($movie->genres as $genre)
-                    <h2 class="bg-gray-300 rounded-lg p-1 m-1 y-6 items-center ">{{ $genre->name }}</h2>
-                @endforeach
+            
+            <!-- 映画情報 -->
+            <div class="mt-6 md:mt-0 flex-1">
+                <h2 class="text-3xl font-bold">{{ $movie->title }}</h2>
+                <p class="text-gray-500 text-lg">({{ \Carbon\Carbon::parse($movie->release_date)->format('Y') }})</p>
+
+                <!-- ジャンル -->
+                <div class="flex flex-wrap mt-4">
+                    @foreach($movie->genres as $genre)
+                        <span class="bg-gray-300 text-gray-700 rounded-lg px-3 py-1 m-1">{{ $genre->name }}</span>
+                    @endforeach
                 </div>
-                <p class="text-gray-600">{{ $movie->overview }}</p>
+
+                <!-- 概要 -->
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold">Overview</h3>
+                    <p class="mt-2 text-gray-700">{{ $movie->overview }}</p>
+                </div>
+
+                <!-- 監督 -->
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold">Director</h3>
+                    <p class="mt-2 text-gray-700">{{ $director->name }}</p>
+                </div>
+
+                <!-- レビューフォームへのリンク -->
+                <div class="mt-6">
+                    <a href="{{ route('reviews.create', ['movie' => $movie]) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Write a Review</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- キャスト情報 -->
+        <div class="mt-8">
+            <h3 class="text-2xl font-semibold">Cast</h3>
+            <div class="grid grid-cols-2 md:grid-cols-10 gap-4 mt-4">
+                @foreach($movie->casts as $cast)
+                    <div class="flex flex-col items-center">
+                        <img src="https://image.tmdb.org/t/p/w500{{ $cast->profile_path }}" alt="{{ $cast->name }} Image" class="object-contain h-48 w-full rounded-lg shadow-md"> <!-- 縦長に表示 -->
+                        <p class="mt-2 text-sm font-medium">{{ $cast->name }}</p> <!-- テキストサイズを小さく調整 -->
+                        <p class="text-gray-500 text-sm">{{ $cast->pivot->character }}</p> <!-- テキストサイズを小さく調整 -->
+                    </div>
+                @endforeach
             </div>
 
+            <!-- 全キャスト表示へのリンク -->
+            <div class="mt-4 text-right">
+                <a href="{{ route('movies.cast', ['tmdbId' => $movie->tmdb_id]) }}" class="text-blue-500 hover:underline">View all cast ({{ $movie->casts()->count() }} members)</a>
+            </div>
         </div>
-        <!--レビューフォームセクション-->
-        <div class="mt-6">
-            <form action="{{ route('reviews.store') }}" method="POST">
-                @csrf
-                <x-tag-input :tags="old('tags', isset($review) ? $review->tags->pluck('name')->implode(', ') : '')" />
-                <div class="mt-4">
-                    <label for="comment" class="block text-gray-700">Comment</label>
-                    <textarea name="comment" id="comment" rows="4" class="w-full border rounded-lg p-2" placeholder="255文字以内で入力">{{ old('comment', isset($review) ? $review->comment : '') }}</textarea>
-                    @error('comment')
-                        <div class="text-red-600 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="mt-4">
-                    <label for="score" class="block text-gray-700">Score</label>
-                    <input type="number" name="score" id="score" min="0" max="100" class="w-full border rounded-lg p-2" placeholder="１〜１００の範囲内で入力" value="{{ old('score', isset($review) ? $review->score : '') }}">
-                    @error('score')
-                        <div class="text-red-600 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-                <input type="hidden" name="movie_id" value="{{ $movie->id }}">
-                <div class="mt-6">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Submit</button>
-                </div>
-            </form>
-            @if(isset($review))
-                <div class="mt-4">
-                    <form action="{{ route('reviews.destroy', $review->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-900">
-                            削除
-                        </button>
-                    </form>
-                </div>
+        <div class="bg-gray-100 p-4 rounded-lg">
+            @if($reviews)
+                @foreach($reviews as $review)
+                    <div class="flex flex-col sm:flex-row mb-4 bg-white rounded-lg p-4 shadow">
+                        <div class="flex flex-col flex-grow">
+                            <div class="justify-between items-start mb-2">
+                                <p class="text-sm test-gray-600 text-right">{{ $review->updated_at}}</p>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-2">投稿者：{{ $review->users->name }}</p>
+                            <p class="text-gray-700 mb-2">{{ $review->comment }}</p>
+                            <p class="font-bold text-yellow-500">SCORE：{{ $review->score }}</p>
+                        </div>
+                    </div>
+                @endforeach
             @endif
         </div>
     </div>

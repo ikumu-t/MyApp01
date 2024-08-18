@@ -48,7 +48,9 @@ class MovieController extends Controller
     {
         // データベースから映画を取得
         $movie = Movie::where('tmdb_id', $tmdbId)
-            ->with('casts', 'genres', 'reviews')
+            ->with(['casts' => function($query) {
+                $query->take(10);
+            }, 'genres', 'reviews'])
             ->first();
         
         if (!$movie) {
@@ -57,14 +59,15 @@ class MovieController extends Controller
             $credits = $movieDetailWithCredits['credits'];
             $movie = $this->movieService->storeMovieDetailWithCredits($movieDetail, $credits);
         }
+        
+        $movie->load(['casts' =>function($query) {
+            $query->take(10);
+        }]);
+        
+        $director = $movie->casts()->wherePivot('role', 'director')->first();
         // ユーザーの最新のレビューを取得
-        $review = Review::where('movie_id', $movie->id)
-                        ->where('user_id', Auth::id())
-                        ->with('tags')
-                        ->latest()
-                        ->first();
-        dd($movie->casts);
+        $reviews = $movie->reviews;
     
-        return view('movies.show', compact('movie', 'review'));
+        return view('movies.show', compact('movie', 'director', 'reviews'));
     }
 }
