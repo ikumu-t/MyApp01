@@ -47,12 +47,18 @@ class TagService
         return Auth::user()->tags()->count();
     }
     
-    public function getReviewCountByTag($userTags)
+    public function getUserReviewCountByTag($userTags)
     {
+        $userId = auth()->id();
         $tagIds = $userTags->pluck('id')->toArray();
         
         $reviewCountsByTag = Tag::whereIn('id', $tagIds)
-            ->withCount('reviews')
+            //->whereHas('reviews', function($query) use ($userId) {
+            //    $query->where('user_id', $userId);
+            //})
+            ->withCount(['reviews' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }])
             ->get()
             ->pluck('reviews_count', 'id');
             
