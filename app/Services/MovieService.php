@@ -12,9 +12,9 @@ class MovieService
     public function mergeAverageScoresForIndex($movies)
     {
         // APIから取得した映画情報からtmdbIdを配列で抽出
-        $tmdbIds = array_map(function ($movie) {
+        $tmdbIds = $movies->map(function ($movie) {
             return $movie->id;
-        }, $movies);
+        })->toArray();
         
         // レビューが存在する映画の平均スコアを取得
         $scores = Movie::whereIn('tmdb_id', $tmdbIds)
@@ -56,8 +56,11 @@ class MovieService
         $castData = [];
         foreach ($credits->cast as $castMember) {
             $cast = Cast::firstOrCreate(
-                ['name' => $castMember->name],
-                ['profile_path' => $castMember->profile_path ?? '']
+                ['person_id' => $castMember->id],
+                [
+                    'name' => $castMember->name,
+                    'profile_path' => $castMember->profile_path ?? ''
+                ]
             );
             $castData[$cast->id] = ['role' => 'cast', 'character' => $castMember->character];
         }
@@ -65,8 +68,11 @@ class MovieService
         foreach ($credits->crew as $crewMember) {
             if ($crewMember->job === 'Director') {
                 $cast = Cast::firstOrCreate(
-                    ['name' => $crewMember->name],
-                    ['profile_path' => $crewMember->profile_path ?? '']
+                    ['person_id' => $castMember->id],
+                    [
+                        'name' => $crewMember->name,
+                        'profile_path' => $crewMember->profile_path ?? ''
+                    ]
                 );
                 $castData[$cast->id] = ['role' => 'director'];
             }

@@ -9,7 +9,7 @@ class Cast extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['name', 'profile_path'];
+    protected $fillable = ['person_id', 'name', 'profile_path'];
     
     public function movies()
     {

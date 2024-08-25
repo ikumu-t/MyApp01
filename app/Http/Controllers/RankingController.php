@@ -70,7 +70,7 @@ class RankingController extends Controller
         });
     
         $userTags = $this->tagService->findTagsByUserId($userId);
-        $userTags = $this->tagService->getReviewCountByTag($userTags);
+        $userTags = $this->tagService->getUserReviewCountByTag($userTags);
     
         return view('movies.ranked', compact('movies', 'userTags', 'myScore'));
     }

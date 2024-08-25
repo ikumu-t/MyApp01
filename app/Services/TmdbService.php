@@ -68,4 +68,28 @@ class TmdbService
             'credits' => $credits,
         ];
     }
+    
+    public function getPersonDetail($personId)
+    {
+        $response = $this->client->get('person/'. $personId, [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'ja',
+            ],
+        ]);
+        
+        return json_decode($response->getBody()->getContents());
+    }
+    
+    public function getMoviesByPerson($personId)
+    {
+        $response = $this->client->get('person/'. $personId. '/movie_credits', [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'ja',
+            ],
+        ]);
+        
+        return json_decode($response->getBody()->getContents());
+    }
 }

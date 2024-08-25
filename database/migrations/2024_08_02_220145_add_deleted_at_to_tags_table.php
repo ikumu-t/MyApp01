@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tags', function (Blueprint $table) {
-            $table->softDeletes(); // deleted_at カラムを削除
+            $table->dropColumn('deleted_at');
         });
     }
 };

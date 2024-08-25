@@ -22,9 +22,12 @@ class HomeController extends Controller
     public function home()
     {
         $popularMovies = $this->tmdbService->getPopularMovies()->results;
+        $popularMovies = collect($popularMovies);
         $popularMovies = $this->movieService->mergeAverageScoresForIndex($popularMovies);
         $latestReviews = $this->reviewService->getlatestReviews(5);
-        //dd($latestReviews->first()->users);
+        
+        session(['previous_page' => url()->full()]);
+
         return view('home', compact('popularMovies', 'latestReviews'));
     }
 }
