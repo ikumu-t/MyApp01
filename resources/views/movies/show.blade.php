@@ -1,7 +1,10 @@
 <x-app-layout>
     <div class="container mx-auto px-4 py-8">
         <!-- 戻るボタン -->
-        <a href="{{ url()->previous() }}" class="absolute top-4 left-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+        @php
+            $previousPage = session('previous_page', route('home')); // デフォルトは人気映画の一覧ページ
+        @endphp
+        <a href="{{ $previousPage }}" class="absolute top-4 left-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
             ← Back
         </a>
         
@@ -33,7 +36,13 @@
                 <!-- 監督 -->
                 <div class="mt-6">
                     <h3 class="text-xl font-semibold">Director</h3>
-                    <p class="mt-2 text-gray-700">{{ $director->name }}</p>
+                    @if ($director->person_id)
+                    <a href="{{ route('casts.show', ['cast' => $director]) }}"class="mt-2 text-gray-700">
+                        {{ $director->name }}
+                    </a>
+                    @else
+                        <span class="mt-2 text-gray-700">{{ $director->name }}</span>
+                    @endif
                 </div>
 
                 <!-- レビューフォームへのリンク -->
@@ -50,7 +59,7 @@
                 @foreach($movie->casts as $cast)
                     <div class="flex flex-col items-center">
                         <img src="https://image.tmdb.org/t/p/w500{{ $cast->profile_path }}" alt="{{ $cast->name }} Image" class="object-contain h-48 w-full rounded-lg shadow-md"> <!-- 縦長に表示 -->
-                        <p class="mt-2 text-sm font-medium">{{ $cast->name }}</p> <!-- テキストサイズを小さく調整 -->
+                        <a href="{{ route('casts.show', ['cast' => $cast]) }}" class="mt-2 text-sm font-medium">{{ $cast->name }}</a> <!-- テキストサイズを小さく調整 -->
                         <p class="text-gray-500 text-sm">{{ $cast->pivot->character }}</p> <!-- テキストサイズを小さく調整 -->
                     </div>
                 @endforeach
@@ -58,9 +67,10 @@
 
             <!-- 全キャスト表示へのリンク -->
             <div class="mt-4 text-right">
-                <a href="{{ route('movies.cast', ['tmdbId' => $movie->tmdb_id]) }}" class="text-blue-500 hover:underline">View all cast ({{ $movie->casts()->count() }} members)</a>
+                <a href="{{ route('movies.casts', ['movie' => $movie]) }}" class="text-blue-500 hover:underline">View all cast ({{ $movie->casts()->count() }} members)</a>
             </div>
         </div>
+        <!-- 最新のレビュー表示 -->
         <div class="bg-gray-100 p-4 rounded-lg">
             @if($reviews)
                 @foreach($reviews as $review)

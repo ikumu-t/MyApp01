@@ -1,5 +1,5 @@
 <x-app-layout>
-    <a href="{{ url()->previous() }}" class="absolute top-4 left-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+    <a href="{{ route('movies.show', ['tmdbId' => $movie->tmdb_id]) }}" class="absolute top-4 left-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
             ← Back
         </a>
     @if(session('success'))

@@ -63,11 +63,15 @@ class MovieController extends Controller
         $movie->load(['casts' =>function($query) {
             $query->take(10);
         }]);
-        
         $director = $movie->casts()->wherePivot('role', 'director')->first();
         // ユーザーの最新のレビューを取得
         $reviews = $movie->reviews;
-    
         return view('movies.show', compact('movie', 'director', 'reviews'));
+    }
+    
+    public function showCastIndex(Movie $movie)
+    {
+        $movie->load('casts');
+        return view('movies.casts_index', compact('movie'));
     }
 }

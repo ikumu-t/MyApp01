@@ -27,7 +27,6 @@ class ReviewController extends Controller
                         ->with('tags')
                         ->latest()
                         ->first();
-                        
         return view('review-form', compact('movie', 'review'));
     }
     

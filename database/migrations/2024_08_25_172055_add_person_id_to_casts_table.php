@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->softDeletes(); // deleted_at カラムを追加
-            
+        Schema::table('casts', function (Blueprint $table) {
+            $table->unsignedBigInteger('person_id')->nullable()->after('id');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
+        Schema::table('casts', function (Blueprint $table) {
+            $table->dropColumn('person_id');
         });
     }
 };
