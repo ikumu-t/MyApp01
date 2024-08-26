@@ -23,7 +23,7 @@
                 <!-- ジャンル -->
                 <div class="flex flex-wrap mt-4">
                     @foreach($movie->genres as $genre)
-                        <span class="bg-gray-300 text-gray-700 rounded-lg px-3 py-1 m-1">{{ $genre->name }}</span>
+                        <a href="{{ route('movies.by_genre', ['genre' => $genre]) }}" class="bg-gray-300 text-gray-700 rounded-lg px-3 py-1 m-1">{{ $genre->name }}</a>
                     @endforeach
                 </div>
 

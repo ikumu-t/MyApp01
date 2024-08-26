@@ -19,6 +19,7 @@ class HomeController extends Controller
         $this->movieService = $movieService;
         $this->reviewService = $reviewService;
     }
+    
     public function home()
     {
         $popularMovies = $this->tmdbService->getPopularMovies()->results;
@@ -26,6 +27,7 @@ class HomeController extends Controller
         $popularMovies = $this->movieService->mergeAverageScoresForIndex($popularMovies);
         $latestReviews = $this->reviewService->getlatestReviews(5);
         
+        // 詳細画面の戻るボタンようにセッションにURLを保存
         session(['previous_page' => url()->full()]);
 
         return view('home', compact('popularMovies', 'latestReviews'));

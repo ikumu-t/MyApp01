@@ -17,7 +17,7 @@
                 <h2 class="text-2xl font-bold mb-2">{{ $movie->title }}</h2>
                 <h2 class="text-gray-700 mb-4">({{ \Carbon\Carbon::parse($movie->release_date)->format('Y') }})</h2>
                 @foreach($movie->genres as $genre)
-                    <h2 class="bg-gray-300 rounded-lg p-1 m-1 y-6 items-center ">{{ $genre->name }}</h2>
+                    <a href="{{ route('movies.by_genre', ['genre' => $genre]) }}" class="bg-gray-300 rounded-lg p-1 m-1 y-6 items-center ">{{ $genre->name }}</a>
                 @endforeach
                 </div>
                 <p class="text-gray-600">{{ $movie->overview }}</p>

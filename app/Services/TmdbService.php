@@ -92,4 +92,17 @@ class TmdbService
         
         return json_decode($response->getBody()->getContents());
     }
+    
+    public function getMoviesByGenre($genreId)
+    {
+        $response = $this->client->get('discover/movie', [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'ja',
+                'with_genres' => $genreId,
+            ],
+        ]);
+        
+        return json_decode($response->getBody()->getContents());
+    }
 }
