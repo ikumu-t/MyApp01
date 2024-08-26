@@ -19,8 +19,9 @@ Route::prefix('movies')->group(function () {
     Route::get('/popular', [MovieController::class, 'popular'])->name('movies.popular');
     Route::get('/search', [MovieController::class, 'search'])->name('movies.search');
     Route::get('/ranked', [RankingController::class, 'rankedMoviesIndex'])->name('movies.ranked');
-    Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');
+    Route::get('/by_genre/{genre}', [MovieController::class, 'moviesByGenre'])->name('movies.by_genre');
     Route::get('/{movie}/casts', [MovieController::class, 'showCastIndex'])->name('movies.casts');
+    Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');
 });
 
 // Cast route
