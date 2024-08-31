@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Movie;
 use App\Models\Genre;
-use App\Models\Cast;
+use App\Models\Person;
 use Carbon\Carbon;
 
 class MovieService
@@ -53,31 +53,31 @@ class MovieService
         $movie->genres()->syncWithoutDetaching($genreIds);
         
         // キャストの処理
-        $castData = [];
+        $personData = [];
         foreach ($credits->cast as $castMember) {
-            $cast = Cast::firstOrCreate(
-                ['person_id' => $castMember->id],
+            $person = Person::firstOrCreate(
+                ['tmdb_id' => $castMember->id],
                 [
                     'name' => $castMember->name,
                     'profile_path' => $castMember->profile_path ?? ''
                 ]
             );
-            $castData[$cast->id] = ['role' => 'cast', 'character' => $castMember->character];
+            $personData[$person->id] = ['role' => 'cast', 'character' => $castMember->character];
         }
         
         foreach ($credits->crew as $crewMember) {
             if ($crewMember->job === 'Director') {
-                $cast = Cast::firstOrCreate(
-                    ['person_id' => $castMember->id],
+                $person = Person::firstOrCreate(
+                    ['tmdb_id' => $crewMember->id],
                     [
                         'name' => $crewMember->name,
                         'profile_path' => $crewMember->profile_path ?? ''
                     ]
                 );
-                $castData[$cast->id] = ['role' => 'director'];
+                $personData[$person->id] = ['role' => 'director'];
             }
         }
-        $movie->casts()->syncWithoutDetaching($castData);
+        $movie->people()->syncWithoutDetaching($personData);
         
         return $movie;
     }

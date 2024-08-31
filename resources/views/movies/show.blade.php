@@ -36,8 +36,8 @@
                 <!-- 監督 -->
                 <div class="mt-6">
                     <h3 class="text-xl font-semibold">Director</h3>
-                    @if ($director->person_id)
-                    <a href="{{ route('casts.show', ['cast' => $director]) }}"class="mt-2 text-gray-700">
+                    @if ($director->tmdb_id)
+                    <a href="{{ route('people.show', ['person' => $director]) }}"class="mt-2 text-gray-700">
                         {{ $director->name }}
                     </a>
                     @else
@@ -56,10 +56,10 @@
         <div class="mt-8">
             <h3 class="text-2xl font-semibold">Cast</h3>
             <div class="grid grid-cols-2 md:grid-cols-10 gap-4 mt-4">
-                @foreach($movie->casts as $cast)
+                @foreach($movie->people as $cast)
                     <div class="flex flex-col items-center">
                         <img src="https://image.tmdb.org/t/p/w500{{ $cast->profile_path }}" alt="{{ $cast->name }} Image" class="object-contain h-48 w-full rounded-lg shadow-md"> <!-- 縦長に表示 -->
-                        <a href="{{ route('casts.show', ['cast' => $cast]) }}" class="mt-2 text-sm font-medium">{{ $cast->name }}</a> <!-- テキストサイズを小さく調整 -->
+                        <a href="{{ route('people.show', ['person' => $cast]) }}" class="mt-2 text-sm font-medium">{{ $cast->name }}</a> <!-- テキストサイズを小さく調整 -->
                         <p class="text-gray-500 text-sm">{{ $cast->pivot->character }}</p> <!-- テキストサイズを小さく調整 -->
                     </div>
                 @endforeach
@@ -67,7 +67,7 @@
 
             <!-- 全キャスト表示へのリンク -->
             <div class="mt-4 text-right">
-                <a href="{{ route('movies.casts', ['movie' => $movie]) }}" class="text-blue-500 hover:underline">View all cast ({{ $movie->casts()->count() }} members)</a>
+                <a href="{{ route('movies.casts', ['movie' => $movie]) }}" class="text-blue-500 hover:underline">View all cast ({{ $movie->people()->count() }} members)</a>
             </div>
         </div>
         <!-- 最新のレビュー表示 -->

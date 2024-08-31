@@ -37,7 +37,9 @@ class ReviewController extends Controller
             'tags' => 'required|string|max:100',
             'comment' => 'string',
             'score' => 'required|integer|min:0|max:100',
-            'movie_id' => 'required|exists:movies,id'
+            'movie_id' => 'required|exists:movies,id',
+            'genre_ids' => 'required|array',
+            'genre_ids.*' => 'exists:genres,id'
         ]);
         
         // レビューを作成または更新
@@ -49,6 +51,7 @@ class ReviewController extends Controller
 
         // 中間テーブルへの保存
         $review->tags()->sync($tags);
+        $review->genres()->sync($validated['genre_ids']);
 
         return redirect()->back()->with('success', 'Review created successfully.');
 

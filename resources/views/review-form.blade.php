@@ -44,6 +44,9 @@
                     @enderror
                 </div>
                 <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+                @foreach($movie->genres as $genre)
+                    <input type="hidden" name="genre_ids[]" value="{{ $genre->id }}">
+                @endforeach
                 <div class="mt-6">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Submit</button>
                 </div>

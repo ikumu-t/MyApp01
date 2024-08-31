@@ -34,9 +34,9 @@ class Movie extends Model
         return $this->belongsToMany(Genre::class, 'genre_movie');
     }
     
-    public function casts()
+    public function people()
     {
-        return $this->belongsToMany(Cast::class, 'cast_movie')
+        return $this->belongsToMany(Person::class, 'movie_person')
             ->withPivot('role', 'character')
             ->withTimestamps();
     }

@@ -58,7 +58,7 @@ class MovieController extends Controller
     {
         // データベースから映画を取得
         $movie = Movie::where('tmdb_id', $tmdbId)
-            ->with(['casts' => function($query) {
+            ->with(['people' => function($query) {
                 $query->take(10);
             }, 'genres', 'reviews'])
             ->first();
@@ -72,13 +72,12 @@ class MovieController extends Controller
         }
         
         // キャストのうち10人をロード
-        $movie->load(['casts' =>function($query) {
+        $movie->load(['people' =>function($query) {
             $query->take(10);
         }]);
         
         // キャストから監督を抽出
-        $director = $movie->casts()->wherePivot('role', 'director')->first();
-        
+        $director = $movie->people()->wherePivot('role', 'director')->first();
         // ユーザーの最新のレビューを取得
         $reviews = $movie->reviews;
         return view('movies.show', compact('movie', 'director', 'reviews'));
@@ -87,7 +86,7 @@ class MovieController extends Controller
     // 全キャスト表示画面
     public function showCastIndex(Movie $movie)
     {
-        $movie->load('casts');
+        $movie->load('people');
         return view('movies.casts_index', compact('movie'));
     }
     

@@ -68,11 +68,18 @@ class RankingController extends Controller
             $rank++;
             return $movie;
         });
-    
-        $userTags = $this->tagService->findTagsByUserId($userId);
-        $userTags = $this->tagService->getUserReviewCountByTag($userTags);
-    
-        return view('movies.ranked', compact('movies', 'userTags', 'myScore'));
+        
+        $tagIndex = collect();
+        
+        if ($userId) {
+            $tagIndex = $this->tagService->findTagsByUserId($userId);
+            $tagIndex = $this->tagService->getUserReviewCountByTag($tagIndex);
+        } else {
+            $tagIndex = $this->tagService->getTop10TagsByReviewCount();
+        }
+        
+        
+        return view('movies.ranked', compact('movies', 'tagIndex', 'myScore'));
     }
 
 

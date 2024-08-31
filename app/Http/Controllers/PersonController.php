@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\TmdbService;
 use App\Services\MovieService;
-use App\Models\Cast;
+use App\Models\Person;
 
-class CastController extends Controller
+class PersonController extends Controller
 {
     protected $tmdbService;
     protected $movieService;
@@ -18,9 +18,9 @@ class CastController extends Controller
         $this->movieService = $movieService;
     }
     
-    public function show(Cast $cast)
+    public function show(Person $person)
     {
-        $movies = $this->tmdbService->getMoviesByPerson($cast->person_id);
+        $movies = $this->tmdbService->getMoviesByPerson($person->tmdb_id);
         $moviesAsCast = collect($movies->cast)->sortByDesc('popularity')->take(20);
         $moviesAsDirector = collect($movies->crew)
             ->filter(function ($crewMember) {
@@ -29,13 +29,13 @@ class CastController extends Controller
             ->sortByDesc('popularity')
             ->take(20);
         
-        $castDetail = $this->tmdbService->getPersonDetail($cast->person_id);
-        $birthDate = new \DateTime($castDetail->birthday);
+        $personDetail = $this->tmdbService->getPersonDetail($person->tmdb_id);
+        $birthDate = new \DateTime($personDetail->birthday);
         $today = new \DateTime('today');
         $age = $birthDate->diff($today)->y;
         $moviesAsCast = $this->movieService->mergeAverageScoresForIndex($moviesAsCast);
         $moviesAsDirector = $this->movieService->mergeAverageScoresForIndex($moviesAsDirector);
             
-        return view('cast-show', compact('cast', 'moviesAsCast', 'moviesAsDirector', 'castDetail', 'age'));
+        return view('person_show', compact('person', 'moviesAsCast', 'moviesAsDirector', 'personDetail', 'age'));
     }
 }

@@ -14,22 +14,25 @@
             </div>
   
         <!--ユーザーのタグ一覧-->
-        <div class="flex flex-wrap space-x-2">
-            @foreach($userTags as $tag)
-                <div
-                    class="tag cursor-pointer bg-gray-200 rounded-full px-4 py-2 mb-2"
-                    data-tag="{{ $tag->name }}"
-                >
-                    {{ $tag->name }} : 
-                    {{ $tag->review_count }}
-                </div>
-            @endforeach
-        </div>
-        <div class="flex items-center mb-4">
-            <input type="checkbox" name="my_score" id="my_score" value="yes" class="mr-2"
-                {{ request('my_score') == 'yes' ? 'checked' : '' }}>
-            <label for="my_score">Myスコア</label>
-        </div>  
+            <div class="flex flex-wrap space-x-2">
+                @foreach($tagIndex as $tag)
+                    <div
+                        class="tag cursor-pointer bg-gray-200 rounded-full px-4 py-2 mb-2"
+                        data-tag="{{ $tag->name }}"
+                    >
+                        {{ $tag->name }} : 
+                        {{ $tag->reviews_count }}
+                    </div>
+                @endforeach
+            </div>
+        
+            @auth
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" name="my_score" id="my_score" value="yes" class="mr-2"
+                        {{ request('my_score') == 'yes' ? 'checked' : '' }}>
+                    <label for="my_score">Myスコア</label>
+                </div>  
+            @endauth
         </form>
 
         <!-- 映画ランキング -->
