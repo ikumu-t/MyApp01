@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Movie;
-use App\Models\Cast;
+use App\Models\Person;
 use App\Services\TmdbService;
 
 class UpdateMovieData extends Command
@@ -33,32 +33,32 @@ class UpdateMovieData extends Command
             $movieData = $this->tmdbService->getMovieDetailWithCredits($movie->tmdb_id);
             $credits = $movieData['credits'];
             foreach ($credits->cast as $castMember) {
-                $cast = Cast::updateOrCreate(
+                $person = Person::updateOrCreate(
                     ['name' => $castMember->name],
                     [   
-                        'person_id' => $castMember->id,
+                        'tmdb_id' => $castMember->id,
                         'name' => $castMember->name, 'profile_path' => $castMember->profile_path ?? ''
                     ]
                 );
-                $castData[$cast->id] = ['role' => 'cast', 'character' => $castMember->character];
+                $personData[$person->id] = ['role' => 'cast', 'character' => $castMember->character];
             }
 
             // クルー（監督など）のperson_idを更新
             foreach ($credits->crew as $crewMember) {
                 if ($crewMember->job === 'Director') {
-                    $cast = Cast::updateOrCreate(
+                    $person = Person::updateOrCreate(
                         ['name' => $castMember->name],
                         [
-                            'person_id' => $crewMember->id,
+                            'tmdb_id' => $crewMember->id,
                             'name' => $crewMember->name, 'profile_path' => $crewMember->profile_path ?? ''
                         ]
                     );
-                    $castData[$cast->id] = ['role' => 'director'];
+                    $personData[$person->id] = ['role' => 'director'];
                 }
             }
 
             // 映画に関連するキャスト・クルーデータを更新
-            $movie->casts()->syncWithoutDetaching($castData);
+            $movie->people()->syncWithoutDetaching($personData);
 
             $this->info("Updated cast data for movie: {$movie->title}");
         }
