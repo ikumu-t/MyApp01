@@ -9,7 +9,7 @@ class Person extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['person_id', 'name', 'profile_path'];
+    protected $fillable = ['tmdb_id', 'name', 'profile_path'];
     
     public function movies()
     {

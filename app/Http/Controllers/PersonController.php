@@ -20,7 +20,9 @@ class PersonController extends Controller
     
     public function show(Person $person)
     {
+        
         $movies = $this->tmdbService->getMoviesByPerson($person->tmdb_id);
+        
         $moviesAsCast = collect($movies->cast)->sortByDesc('popularity')->take(20);
         $moviesAsDirector = collect($movies->crew)
             ->filter(function ($crewMember) {

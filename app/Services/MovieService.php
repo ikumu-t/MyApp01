@@ -58,6 +58,7 @@ class MovieService
             $person = Person::firstOrCreate(
                 ['tmdb_id' => $castMember->id],
                 [
+                    'tmdb_id' => $castMember->id,
                     'name' => $castMember->name,
                     'profile_path' => $castMember->profile_path ?? ''
                 ]
@@ -70,6 +71,7 @@ class MovieService
                 $person = Person::firstOrCreate(
                     ['tmdb_id' => $crewMember->id],
                     [
+                        'tmdb_id' => $crewMember->id,
                         'name' => $crewMember->name,
                         'profile_path' => $crewMember->profile_path ?? ''
                     ]
