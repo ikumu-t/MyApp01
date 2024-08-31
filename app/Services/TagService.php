@@ -47,29 +47,34 @@ class TagService
         return Auth::user()->tags()->count();
     }
     
-    public function getUserReviewCountByTag($userTags)
+    public function getUserReviewCountByTag($tagIndex)
     {
         $userId = auth()->id();
-        $tagIds = $userTags->pluck('id')->toArray();
+        $tagIds = $tagIndex->pluck('id')->toArray();
         
         $reviewCountsByTag = Tag::whereIn('id', $tagIds)
-            //->whereHas('reviews', function($query) use ($userId) {
-            //    $query->where('user_id', $userId);
-            //})
             ->withCount(['reviews' => function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             }])
             ->get()
             ->pluck('reviews_count', 'id');
             
-            foreach ($userTags as $tag) {
+            foreach ($tagIndex as $tag) {
             if (isset($reviewCountsByTag[$tag->id])) {
-                $tag->review_count = $reviewCountsByTag[$tag->id];
+                $tag->reviews_count = $reviewCountsByTag[$tag->id];
             } else {
-                $tag->review_count = 0;
+                $tag->reviews_count = 0;
             }
         }
         
-        return $userTags;
+        return $tagIndex;
+    }
+    
+    public function getTop10TagsByReviewCount()
+    {
+        return Tag::withCount('reviews')
+            ->orderBy('reviews_count', 'desc')
+            ->limit(10)
+            ->get();
     }
 }

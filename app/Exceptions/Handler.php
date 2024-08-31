@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -27,4 +29,30 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    
+    protected $dontReport = [
+        // 報告しない例外クラス
+    ];
+    
+    public function report(Throwable $exception)
+    {
+        parent::report($exception);
+    }
+    
+    public function render($request, Throwable $exception)
+    {
+        // モデルが見つからない場合のカスタム処理
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        // URLが見つからない場合のカスタム処理
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        // それ以外の例外に対するデフォルトの処理
+        return parent::render($request, $exception);
+    }
+    
 }

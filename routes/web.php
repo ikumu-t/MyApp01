@@ -7,7 +7,7 @@ use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CastController;
+use App\Http\Controllers\PersonController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +24,8 @@ Route::prefix('movies')->group(function () {
     Route::get('/{tmdbId}', [MovieController::class, 'show'])->name('movies.show');
 });
 
-// Cast route
-Route::get('/casts/{cast}', [CastController::class, 'show'])->name('casts.show');
+// People route
+Route::get('/people/{person}', [PersonController::class, 'show'])->name('people.show');
 
 // Review routes
 Route::middleware('auth')->prefix('reviews')->group(function () {
